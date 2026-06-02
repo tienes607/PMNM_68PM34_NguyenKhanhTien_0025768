@@ -10,11 +10,12 @@
     <?php if (isset ($_GET['error'])): ?>
         <p style="color: red;"><?php echo $_GET['error']; ?></p>
     <?php endif; ?>
-    <form action="auth/login" method="post">
+    <form action="/auth/login" method="post">
         <label for="username">Tên đăng nhập:</label>
         <input type="text" id="username" name="username" required><br><br>
         <label for="password">Mật khẩu:</label>
-        <input id="password" name="password" required><br><br>
+        <input type="password" id="password" name="password" required><br><br>
         <input type="submit" value="Đăng nhập">
+    </form>
 </body>
 </html>
