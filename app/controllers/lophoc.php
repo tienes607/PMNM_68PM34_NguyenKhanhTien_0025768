@@ -2,23 +2,29 @@
 require_once "../app/core/controller.php";
 class lophoc extends Controller
 {
-  public function index($limit = 10, $offset = 0, $search = '')
+  public function index($limit = 5, $offset = 0)
   {
-    $search = $_GET['search'] ?? $search;
+    $search = $_GET['search'] ?? '';
+    $sort = $_GET['sort'] ?? 'malop';
+    $sortDir = $_GET['sortDir'] ?? 'asc';
 
     $lophocModel = $this->model('lophocModel');
-    $result = $lophocModel->paging($limit, $offset, $search);
+    $result = $lophocModel->paging($limit, $offset, $search, $sort, $sortDir);
     $lophocs = $result['lophocs'];
     $totalPages = $result['totalPages'];
+    $totalRecords = $result['totalRecords'];
 
     $this->view('layout/masterLayout', [
       'viewname' => 'lophoc/index',
       'lophocs' => $lophocs,
       'search' => $search,
+      'sort' => $sort,
+      'sortDir' => $sortDir,
       'title' => 'Danh sách lớp',
       'totalPages' => $totalPages,
-      'offset' => $offset,
-      'limit' => $limit,
+      'totalRecords' => $totalRecords,
+      'offset' => (int)$offset,
+      'limit' => (int)$limit,
     ]);
   }
 

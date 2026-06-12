@@ -65,7 +65,7 @@ class sinhvienModel
 
   public function paging($limit = 5, $offset = 0, $search = "", $malop = "", $sort = "mssv", $sortDir = "asc")
 {
-    $allowedSort = ['mssv', 'hoten', 'gioitinh', 'tenlop'];
+    $allowedSort = ['mssv', 'hoten'];
     $allowedDir  = ['asc', 'desc'];
     if (!in_array($sort, $allowedSort)) $sort = 'mssv';
     if (!in_array($sortDir, $allowedDir)) $sortDir = 'asc';
@@ -86,7 +86,7 @@ class sinhvienModel
         $countSql .= $where;
     }
 
-    $sql .= " ORDER BY {$sort} {$sortDir} LIMIT :limit OFFSET :offset";
+    $sql .= " ORDER BY sv.{$sort} {$sortDir} LIMIT :limit OFFSET :offset";
 
     $stmt = $this->conn->prepare($sql);
     $stmt->bindValue(':limit',  (int)$limit,  PDO::PARAM_INT);

@@ -6,28 +6,25 @@ $currentMalop   = $malop   ?? '';
 $currentLimit   = (int)($limit  ?? 5);
 $currentOffset  = (int)($offset ?? 0);
 
-function buildQS(array $override = []): string {
-    global $currentSort, $currentSortDir, $currentSearch, $currentMalop;
+function buildQS($s, $sd, $se, $m, array $override = []): string {
     $p = array_merge([
-        'sort'    => $currentSort,
-        'sortDir' => $currentSortDir,
-        'search'  => $currentSearch,
-        'malop'   => $currentMalop,
+        'sort'    => $s,
+        'sortDir' => $sd,
+        'search'  => $se,
+        'malop'   => $m,
     ], $override);
     $p = array_filter($p, fn($v) => $v !== '' && $v !== null);
     return $p ? '?' . http_build_query($p) : '';
 }
 
-function sortLink(string $col, int $limit): string {
-    global $currentSort, $currentSortDir;
-    $newDir = ($currentSort === $col && $currentSortDir === 'asc') ? 'desc' : 'asc';
-    return "/sinhvien/index/{$limit}/0" . buildQS(['sort' => $col, 'sortDir' => $newDir]);
+function sortLink($col, $limit, $curSort, $curSortDir, $curSearch, $curMalop) {
+    $newDir = ($curSort === $col && $curSortDir === 'asc') ? 'desc' : 'asc';
+    return "/sinhvien/index/{$limit}/0" . buildQS($col, $newDir, $curSearch, $curMalop);
 }
 
-function sortIcon(string $col): string {
-    global $currentSort, $currentSortDir;
-    if ($currentSort !== $col) return '<span class="text-secondary ms-1" style="opacity:.4">↕</span>';
-    return $currentSortDir === 'asc' ? '<span class="ms-1">▲</span>' : '<span class="ms-1">▼</span>';
+function sortIcon($col, $curSort, $curSortDir) {
+    if ($curSort !== $col) return '';
+    return $curSortDir === 'asc' ? '<span class="text-primary ms-1">▲</span>' : '<span class="text-primary ms-1">▼</span>';
 }
 ?>
 
@@ -79,7 +76,7 @@ function sortIcon(string $col): string {
     <div class="d-flex justify-content-end align-items-center mb-2">
       <label class="me-2 mb-0 text-muted small">Hiển thị:</label>
       <select class="form-select form-select-sm w-auto"
-              onchange="location.href='/sinhvien/index/'+this.value+'/0<?php echo htmlspecialchars(buildQS()); ?>'">
+              onchange="location.href='/sinhvien/index/'+this.value+'/0<?php echo htmlspecialchars(buildQS($currentSort, $currentSortDir, $currentSearch, $currentMalop)); ?>'"> 
         <?php foreach ([5, 10, 20, 50] as $opt): ?>
           <option value="<?php echo $opt; ?>" <?php echo ($currentLimit === $opt) ? 'selected' : ''; ?>>
             <?php echo $opt; ?> / trang
@@ -94,25 +91,17 @@ function sortIcon(string $col): string {
           <tr>
             <th>STT</th>
             <th>
-              <a href="<?php echo sortLink('mssv', $currentLimit); ?>" class="text-white text-decoration-none">
-                MSSV<?php echo sortIcon('mssv'); ?>
+              <a href="<?php echo sortLink('mssv', $currentLimit, $currentSort, $currentSortDir, $currentSearch, $currentMalop); ?>" class="text-white text-decoration-none">
+                MSSV<?php echo sortIcon('mssv', $currentSort, $currentSortDir); ?>
               </a>
             </th>
             <th>
-              <a href="<?php echo sortLink('hoten', $currentLimit); ?>" class="text-white text-decoration-none">
-                Họ tên<?php echo sortIcon('hoten'); ?>
+              <a href="<?php echo sortLink('hoten', $currentLimit, $currentSort, $currentSortDir, $currentSearch, $currentMalop); ?>" class="text-white text-decoration-none">
+                Họ tên<?php echo sortIcon('hoten', $currentSort, $currentSortDir); ?>
               </a>
             </th>
-            <th>
-              <a href="<?php echo sortLink('gioitinh', $currentLimit); ?>" class="text-white text-decoration-none">
-                Giới tính<?php echo sortIcon('gioitinh'); ?>
-              </a>
-            </th>
-            <th>
-              <a href="<?php echo sortLink('tenlop', $currentLimit); ?>" class="text-white text-decoration-none">
-                Lớp học<?php echo sortIcon('tenlop'); ?>
-              </a>
-            </th>
+            <th>Giới tính</th>
+            <th>Lớp học</th>
             <th>Thao tác</th>
           </tr>
         </thead>
@@ -160,7 +149,7 @@ function sortIcon(string $col): string {
         <ul class="pagination mb-0">
           <?php for ($i = 1; $i <= $totalPages; $i++):
             $pageOffset  = ($i - 1) * $currentLimit;
-            $qs          = buildQS();
+            $qs          = buildQS($currentSort, $currentSortDir, $currentSearch, $currentMalop);
             $activeClass = ($pageOffset === $currentOffset) ? ' active' : '';
             $pageStyle   = $activeClass
               ? 'background-color:#0d6efd;color:#fff;border-color:#0d6efd;'
