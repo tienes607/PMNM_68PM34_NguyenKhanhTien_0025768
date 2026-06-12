@@ -7,15 +7,16 @@
   <title><?php echo $title; ?></title>
   <style>
     footer {
-      background-color: blue;
+      background-color: #0d6efd; 
       color: white;
       position: fixed;
       bottom: 0;
       width: 100%;
+      z-index: 1000;
     }
 
     footer a {
-      color: #e0d4ff;
+      color: rgba(255,255,255,0.9);
       text-decoration: none;
     }
 
