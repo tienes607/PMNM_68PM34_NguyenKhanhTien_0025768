@@ -1,7 +1,8 @@
-<div class="card mb-4 mt-4">
-  <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white">
-    <h2 class="mb-0"><?php echo $title; ?></h2>
-    <a href="/lophoc/create" class="btn btn-light">Thêm lớp</a>
+<div class="bg-info p-4">
+  <div class="card mb-4 mt-4">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h2 class="mb-0"><?php echo $title; ?> <span class="badge" style="background-color: #a0d8e8; color: #333; font-size: 16px;"><?php echo count($lophocs); ?></span></h2>
+    <a href="/lophoc/create" class="btn btn-add">+ Thêm lớp</a>
   </div>
 
   <div class="card-body">
@@ -10,13 +11,16 @@
         <label class="form-label" for="search">Tìm theo mã hoặc tên lớp</label>
         <input type="text" class="form-control" id="search" name="search" value="<?php echo htmlspecialchars($search ?? ''); ?>" placeholder="Tìm theo mã hoặc tên lớp...">
       </div>
-      <div class="col-md-4 d-grid">
-        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Tìm kiếm</button>
+      </div>
+      <div class="col-md-2">
+        <a href="/lophoc/index" class="btn btn-secondary w-100">Đặt lại</a>
       </div>
     </form>
 
     <div class="table-responsive">
-      <table class="table table-hover align-middle">
+      <table class="table table-striped table-hover align-middle">
         <thead class="table-dark">
           <tr>
             <th>STT</th>
@@ -49,7 +53,7 @@
     </div>
 
     <div class="d-flex justify-content-between align-items-center mt-3">
-      <div class="text-muted">Hiển thị <?php echo count($lophocs); ?> / trang</div>
+      <div class="text-muted">Hiển thị: <?php echo count($lophocs); ?>/trang</div>
       <nav>
         <ul class="pagination mb-0">
           <?php
@@ -68,5 +72,6 @@
         </ul>
       </nav>
     </div>
+  </div>
   </div>
 </div>
