@@ -47,6 +47,14 @@ class sinhvienModel
     return $stmt->execute();
   }
 
+  public function delete($MSSV)
+  {
+    $query = "DELETE FROM sinhvien WHERE MSSV = :MSSV";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':MSSV', $MSSV);
+    return $stmt->execute();
+  }
+
   public function getAllLopHoc()
   {
     $query = "SELECT * FROM lophoc ORDER BY tenlop";

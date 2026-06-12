@@ -100,4 +100,43 @@ class sinhvien extends Controller
       }
     }
   }
+
+  public function delete($MSSV = null)
+  {
+    $sinhvienModel = $this->model('sinhvienModel');
+
+    if (!$MSSV) {
+      header("Location: /sinhvien/index");
+      exit();
+    }
+
+    if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+      $confirm = $_POST['confirm'] ?? '';
+      if ($confirm === 'yes') {
+        $result = $sinhvienModel->delete($MSSV);
+        if ($result) {
+          header("Location: /sinhvien/index");
+          exit();
+        } else {
+          echo "Xóa sinh viên thất bại!";
+          exit();
+        }
+      } else {
+        header("Location: /sinhvien/index");
+        exit();
+      }
+    }
+
+    $sinhvien = $sinhvienModel->getSinhVienById($MSSV);
+    if (!$sinhvien) {
+      header("Location: /sinhvien/index");
+      exit();
+    }
+
+    $this->view('layout/masterLayout', [
+      'viewname' => 'sinhvien/delete',
+      'title' => 'Xóa sinh viên',
+      'sinhvien' => $sinhvien,
+    ]);
+  }
 }
