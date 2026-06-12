@@ -4,7 +4,7 @@
      private static $host = "localhost";
      private static $username = "root";
      private static $password = "";
-     private static $dbname = "labpmnm";
+     private static $dbname = "68pm34";
      private static $conn;
 
      public static function Connect()
