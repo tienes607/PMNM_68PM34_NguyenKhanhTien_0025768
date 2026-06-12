@@ -2,29 +2,32 @@
 require_once "../app/core/controller.php";
 class sinhvien extends Controller
 {
-  public function index($limit = 5, $offset = 0, $search = "")
-  {
-    $search = $_GET['search'] ?? $search;
-    $malop = $_GET['malop'] ?? '';
+  public function index($limit = 5, $offset = 0)
+{
+    $search  = $_GET['search']  ?? '';
+    $malop   = $_GET['malop']   ?? '';
+    $sort    = $_GET['sort']    ?? 'mssv';
+    $sortDir = $_GET['sortDir'] ?? 'asc';
 
     $sinhvienModel = $this->model('sinhvienModel');
-    $lophocs = $sinhvienModel->getAllLopHoc();
-    $result = $sinhvienModel->paging($limit, $offset, $search, $malop);
-    $sinhviens = $result['sinhviens'];
-    $totalPages = $result['totalPages'];
+    $lophocs       = $sinhvienModel->getAllLopHoc();
+    $result        = $sinhvienModel->paging($limit, $offset, $search, $malop, $sort, $sortDir);
 
     $this->view('layout/masterLayout', [
-      'viewname' => 'sinhvien/index',
-      'sinhviens' => $sinhviens,
-      'lophocs' => $lophocs,
-      'search' => $search,
-      'malop' => $malop,
-      'title' => 'Danh sách sinh viên',
-      'totalPages' => $totalPages,
-      'offset' => $offset,
-      'limit' => $limit,
+        'viewname'     => 'sinhvien/index',
+        'sinhviens'    => $result['sinhviens'],
+        'lophocs'      => $lophocs,
+        'search'       => $search,
+        'malop'        => $malop,
+        'sort'         => $sort,
+        'sortDir'      => $sortDir,
+        'title'        => 'Danh sách sinh viên',
+        'totalPages'   => $result['totalPages'],
+        'totalRecords' => $result['totalRecords'],
+        'offset'       => (int)$offset,
+        'limit'        => (int)$limit,
     ]);
-  }
+}
 
   public function create()
   {

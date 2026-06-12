@@ -63,50 +63,51 @@ class sinhvienModel
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  public function paging($limit = 5, $offset = 0, $search = "", $malop = "")
-  {
-    $sql = "SELECT sv.*, lh.tenlop FROM sinhvien sv LEFT JOIN lophoc lh ON sv.malop = lh.malop";
-    $countSql = "SELECT COUNT(*) FROM sinhvien sv";
-    $conditions = [];
+  public function paging($limit = 5, $offset = 0, $search = "", $malop = "", $sort = "mssv", $sortDir = "asc")
+{
+    $allowedSort = ['mssv', 'hoten', 'gioitinh', 'tenlop'];
+    $allowedDir  = ['asc', 'desc'];
+    if (!in_array($sort, $allowedSort)) $sort = 'mssv';
+    if (!in_array($sortDir, $allowedDir)) $sortDir = 'asc';
 
+    $sql      = "SELECT sv.*, lh.tenlop FROM sinhvien sv LEFT JOIN lophoc lh ON sv.malop = lh.malop";
+    $countSql = "SELECT COUNT(*) FROM sinhvien sv LEFT JOIN lophoc lh ON sv.malop = lh.malop";
+
+    $conditions = [];
     if ($search !== "") {
-      $conditions[] = "(sv.mssv LIKE :search OR sv.hoten LIKE :search)";
+        $conditions[] = "(sv.mssv LIKE :search OR sv.hoten LIKE :search)";
     }
     if ($malop !== "") {
-      $conditions[] = "sv.malop = :malop";
+        $conditions[] = "sv.malop = :malop";
     }
     if (!empty($conditions)) {
-      $where = ' WHERE ' . implode(' AND ', $conditions);
-      $sql .= $where;
-      $countSql .= $where;
+        $where     = ' WHERE ' . implode(' AND ', $conditions);
+        $sql      .= $where;
+        $countSql .= $where;
     }
 
-    $sql .= " LIMIT :limit OFFSET :offset";
+    $sql .= " ORDER BY {$sort} {$sortDir} LIMIT :limit OFFSET :offset";
+
     $stmt = $this->conn->prepare($sql);
-    $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+    $stmt->bindValue(':limit',  (int)$limit,  PDO::PARAM_INT);
     $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
-
-    if ($search !== "") {
-      $stmt->bindValue(':search', "%{$search}%", PDO::PARAM_STR);
-    }
-    if ($malop !== "") {
-      $stmt->bindValue(':malop', $malop, PDO::PARAM_STR);
-    }
+    if ($search !== "") $stmt->bindValue(':search', "%{$search}%", PDO::PARAM_STR);
+    if ($malop  !== "") $stmt->bindValue(':malop',  $malop,        PDO::PARAM_STR);
     $stmt->execute();
-    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $sinhviens = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     $countStmt = $this->conn->prepare($countSql);
-    if ($search !== "") {
-      $countStmt->bindValue(':search', "%{$search}%", PDO::PARAM_STR);
-    }
-    if ($malop !== "") {
-      $countStmt->bindValue(':malop', $malop, PDO::PARAM_STR);
-    }
+    if ($search !== "") $countStmt->bindValue(':search', "%{$search}%", PDO::PARAM_STR);
+    if ($malop  !== "") $countStmt->bindValue(':malop',  $malop,        PDO::PARAM_STR);
     $countStmt->execute();
-    $totalRecords = $countStmt->fetchColumn();
+    $totalRecords = (int)$countStmt->fetchColumn();
 
-    $totalPages = $limit > 0 ? ceil($totalRecords / $limit) : 1;
+    $totalPages = $limit > 0 ? (int)ceil($totalRecords / $limit) : 1;
 
-    return ['sinhviens' => $result, 'totalPages' => $totalPages];
-  }
+    return [
+        'sinhviens'    => $sinhviens,
+        'totalPages'   => $totalPages,
+        'totalRecords' => $totalRecords,
+    ];
+}
 }
