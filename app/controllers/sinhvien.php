@@ -50,12 +50,19 @@ class sinhvien extends Controller
 
       $sinhvienModel = $this->model('sinhvienModel');
       $result = $sinhvienModel->create($MSSV, $HoTen, $GioiTinh, $MaLop);
-      if ($result) {
+      
+      if ($result['success']) {
         header("Location: /sinhvien/index");
         exit();
       } else {
-        echo "Thêm mới sinh viên thất bại!";
-        exit();
+        $lophocs = $sinhvienModel->getAllLopHoc();
+        $this->view('layout/masterLayout', [
+          'viewname' => 'sinhvien/create',
+          'title' => 'Thêm sinh viên',
+          'lophocs' => $lophocs,
+          'error' => $result['error'],
+          'old_data' => ['MSSV' => $MSSV, 'HoTen' => $HoTen, 'GioiTinh' => $GioiTinh, 'MaLop' => $MaLop]
+        ]);
       }
     }
   }

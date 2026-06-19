@@ -23,8 +23,8 @@ function sortLink($col, $limit, $curSort, $curSortDir, $curSearch, $curMalop) {
 }
 
 function sortIcon($col, $curSort, $curSortDir) {
-    if ($curSort !== $col) return '';
-    return $curSortDir === 'asc' ? '<span class="text-primary ms-1">▲</span>' : '<span class="text-primary ms-1">▼</span>';
+    if ($curSort !== $col) return '<span class="text-secondary ms-1" style="opacity:.4">↕</span>';
+    return $curSortDir === 'asc' ? '<span class="ms-1">▲</span>' : '<span class="ms-1">▼</span>';
 }
 ?>
 

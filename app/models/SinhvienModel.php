@@ -18,13 +18,20 @@ class sinhvienModel
 
   public function create($MSSV, $HoTen, $GioiTinh, $MaLop)
   {
+    $existingStudent = $this->getSinhVienById($MSSV);
+    if ($existingStudent) {
+      return array('success' => false, 'error' => 'Mã số sinh viên đã tồn tại!');
+    }
+
     $query = "INSERT INTO sinhvien (MSSV, HoTen, GioiTinh, MaLop) VALUES ( :MSSV, :HoTen, :GioiTinh, :MaLop )";
     $stmt = $this->conn->prepare($query);
     $stmt->bindParam(':MSSV', $MSSV);
     $stmt->bindParam(':HoTen', $HoTen);
     $stmt->bindParam(':GioiTinh', $GioiTinh);
     $stmt->bindParam(':MaLop', $MaLop);
-    return $stmt->execute();
+    $result = $stmt->execute();
+    
+    return array('success' => $result, 'error' => $result ? null : 'Lỗi khi thêm sinh viên');
   }
 
   public function getSinhVienById($MSSV)
