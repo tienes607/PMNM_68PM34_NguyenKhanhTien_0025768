@@ -1,7 +1,7 @@
 <header>
   <nav class="navbar navbar-expand-lg navbar-dark bg-secondary shadow-sm">
     <div class="container-fluid px-4">
-      <a class="navbar-brand fw-bold fs-5" href="/">Quản lý sinh viên</a>
+      <a class="navbar-brand fw-bold fs-5" href="/sinhvien/index">Quản lý sinh viên</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -16,7 +16,7 @@
                href="/lophoc/index">Danh sách lớp học</a>
           </li>
           <li class="nav-item ms-3">
-            <a class="btn btn-danger btn-sm px-4 py-2 rounded-2" href="#">Đăng xuất</a>
+            <a class="btn btn-danger btn-sm px-4 py-2 rounded-2" href="/auth/logout">Đăng xuất</a>
           </li>
         </ul>
       </div>
